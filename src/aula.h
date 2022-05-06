@@ -11,8 +11,7 @@
 
 typedef struct Bloco Bloco;
 typedef struct Item{
-    char value[100];
-    int cont;
+    char value;
 }Item;
 
 struct Bloco{
@@ -26,12 +25,8 @@ typedef struct Lista{
 }Lista;
 
 void FLVazia(Lista *l);
-void preencheLista(Lista *l,char f[80], bool novo);
-void insertLista(Lista *l);
-void removeListaItem(Lista *l);
-void removeRepet(Lista *l);
-void showRepet(Lista *l);
+void preencheLista(Lista *l,char f[80]);
+void maiorCodon(Lista *l);
 void printLista(Lista *l);
-void preencheArquivo(FILE* arq);
 void atualizaArquivo(Lista *l,char nomearquvio[80]);
 #endif

@@ -7,159 +7,45 @@ void FLVazia(Lista *l){
     // diz que o proximo item depois do ultimo é nulo
     l->cauda->prox=NULL;
 }
-void preencheLista(Lista *l,char arquivo[80],bool novo){
+void preencheLista(Lista *l,char arquivo[80]){
     FILE *f;
-    char nome[100];
+    char nucleotideo;
     Item aux;
-    if(!novo){
-        if(!(f=fopen(arquivo,"r"))){
-            printf("Erro ao abrir arquivo.\n");
-            exit(1);
-        }
-        fseek(f,0,SEEK_END);
-        fseek(f, -9, SEEK_CUR);
-        fscanf(f,"%s",nome);
-        if(strcmp(nome,"---------") !=0){
-            fclose(f);
-            f=fopen(arquivo,"a");
-            fputs("\n---------",f);
-        }
+    if(!(f=fopen(arquivo,"r"))){
+        printf("Erro ao abrir arquivo.\n");
+        exit(1);
+    }
+    fseek(f,0,SEEK_END);
+    fseek(f, -1, SEEK_CUR);
+    nucleotideo=fgetc(f);
+    if(nucleotideo!='-'){
         fclose(f);
-        f=fopen(arquivo,"r");
+        f=fopen(arquivo,"a");
+        fputc('-',f);
     }
-    else{
-        f= fopen("ArquivoNomes.txt","w");
-		preencheArquivo(f);
-		fclose(f);
-		f=fopen("ArquivoNomes.txt","r");
-    }
-    fscanf(f,"%s ",nome);
+    fclose(f);
+    f=fopen(arquivo,"r");
+    nucleotideo=fgetc(f);
     int i=0;
-    while(strcmp(nome,"---------") !=0&&i<MAXTAM){
+    while(nucleotideo!='-'){
         l->cauda->prox=(Bloco*)malloc(sizeof(Bloco));
         l->cauda=l->cauda->prox;
-        strcpy(aux.value,nome);
-        aux.cont=0;
+        aux.value=nucleotideo;
         l->cauda->dado=aux;
         l->cauda->prox=NULL;
-        fscanf(f,"%s ",nome);
+        nucleotideo=fgetc(f);
         i++;
     }
     if (i>=MAXTAM)
         printf("Arquivo e igual ou excedeu a quantidade maxima de 100 nomes, lista fica com os 100 primeiros\n");
     fclose(f);
 }
-void preencheArquivo(FILE* arq){
-    char nome[100];
-    fgets(nome, 100, stdin);
-    do
-    {
-        printf("Insira o nome: (Max 100, 0 para sair)\n");
-        fgets(nome, 100, stdin);
-        if (nome[0]!='0')
-            fputs(nome, arq);
-    } while (nome[0]!='0');
-    fputs("---------", arq);
-}
-void insertLista(Lista *l){
-    Item item;
-    char nome[100];
-    fgets(nome, 100, stdin);
-    printf("Qual nome deseja inserir no final? \n");
-	fgets(nome,100,stdin);
-    nome[strlen(nome)-1]='\0';
-    strcpy(item.value,nome);
-    item.cont=0;
-    l->cauda->prox=(Bloco*)malloc(sizeof(Bloco));
-    l->cauda=l->cauda->prox;
-    l->cauda->dado=item;
-    l->cauda->prox=NULL;
-}
-void removeListaItem(Lista *l){
-    Bloco* aux, *freeBloco;
-    char nome[100];
-    aux=l->cabeca;
-    fgets(nome, 100, stdin);
-    printf("Qual nome deseja remover? (Remove todas as aparicoes)\n");
-	fgets(nome,100,stdin);
-    nome[strlen(nome)-1]='\0';
-    while (aux->prox!=NULL){
-        if (strcmp(aux->prox->dado.value,nome)==0){
-            if (aux->prox==l->cauda){
-                free(aux->prox);
-                aux->prox=NULL;
-                l->cauda=aux;
-            }
-            else{
-                freeBloco=aux->prox;
-                aux->prox=aux->prox->prox;
-                free(freeBloco);
-            }
-        }
-        else{
-            aux=aux->prox;
-        }
-    }
-}
-void removeRepet(Lista *l){
-    Bloco *percorre, *remove, *freeBloco;
-    percorre=l->cabeca;
-    while (percorre->prox!=NULL){
-        remove=percorre->prox;
-        while (remove->prox!=NULL)
-        {
-            if (strcmp(remove->prox->dado.value,percorre->prox->dado.value)==0){
-                if (remove->prox==l->cauda){
-                    free(remove->prox);
-                    remove->prox=NULL;
-                    l->cauda=remove;
-                }
-                else{
-                    freeBloco=remove->prox;
-                    remove->prox=remove->prox->prox;
-                    free(freeBloco);
-                }
-            }
-            else
-                remove=remove->prox;
-        }
-        percorre=percorre->prox;
-    }
-}
-void showRepet(Lista *l){
-    printf("oi\n");
-    Bloco *percorre, *remove,*aux;
-    percorre=l->cabeca;
-    aux=l->cabeca;
-    while (percorre->prox!=NULL){
-        if (percorre->prox->dado.cont!= -1)
-            percorre->prox->dado.cont+=1;
-        remove=percorre->prox;
-        while (remove->prox!=NULL&&percorre->prox->dado.cont!=-1)
-        {
-            if (strcmp(remove->prox->dado.value,percorre->prox->dado.value)==0){
-                percorre->prox->dado.cont+=1;
-                remove->prox->dado.cont= -1;
-            }
-            remove=remove->prox;
-        }
-        percorre=percorre->prox;
-    }
-    while (aux->prox!=NULL)
-    {
-        if (aux->prox->dado.cont>0)
-            printf("%s\t repetições: %d\n",aux->prox->dado.value,aux->prox->dado.cont);
-        aux->prox->dado.cont=0;
-        aux=aux->prox;
-    }
-    printf("\n");
-}
 void printLista(Lista *l){
     Bloco* aux;
     aux=l->cabeca;
     while (aux->prox!=NULL)
     {
-        printf("%s, ",aux->prox->dado.value);
+        printf("%c-",aux->prox->dado.value);
         aux=aux->prox;
     }
     printf("\n");
@@ -171,11 +57,36 @@ void atualizaArquivo(Lista *l,char nomearquvio[80]){
     aux=l->cabeca;
     while(aux->prox!=NULL)
     {
-        strcat(aux->prox->dado.value,"\n");
-        fputs(aux->prox->dado.value, f);
-        aux->prox->dado.value[strlen(aux->prox->dado.value)-1]='\0';
+        fputc(aux->prox->dado.value, f);
         aux=aux->prox;
     }
-    fputs("---------", f);
+    fputc('-', f);
     fclose(f);
+}
+void maiorCodon(Lista *l){
+    Bloco *percorre, *remove;
+    int cont=0;
+    percorre=l->cabeca;
+    while (percorre->prox!=NULL){
+        cont=0;
+        remove=percorre->prox;
+        while (remove->prox!=NULL)
+        {
+            printf("%c/%c ",remove->dado.value,remove->prox->dado.value);
+            if (remove->dado.value=='T'&&remove->prox->dado.value=='A')
+                cont+=1;
+            else if (remove->dado.value=='A'&&remove->prox->dado.value=='G')
+                cont+=1;
+            else if(remove->dado.value=='G'&&remove->prox->dado.value=='C')
+                cont+=1;
+            else if(remove->dado.value=='C'&&remove->prox->dado.value=='T')
+                cont+=1;
+            else
+                break;
+            remove=remove->prox;
+        }
+        printf("%c-",percorre->prox->dado.value);
+        printf("%d\n",cont);
+        percorre=percorre->prox;
+    }
 }
