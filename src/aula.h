@@ -26,7 +26,9 @@ typedef struct Lista{
 
 void FLVazia(Lista *l);
 void preencheLista(Lista *l,char f[80]);
-void maiorCodon(Lista *l);
+void maiorCodon(Lista *l,Lista *codon);
 void printLista(Lista *l);
 void atualizaArquivo(Lista *l,char nomearquvio[80]);
+int tamanhoLista(Lista *l);
+void printCodon(Bloco *b,int cont);
 #endif

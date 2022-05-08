@@ -26,7 +26,6 @@ void preencheLista(Lista *l,char arquivo[80]){
     fclose(f);
     f=fopen(arquivo,"r");
     nucleotideo=fgetc(f);
-    int i=0;
     while(nucleotideo!='-'){
         l->cauda->prox=(Bloco*)malloc(sizeof(Bloco));
         l->cauda=l->cauda->prox;
@@ -34,10 +33,7 @@ void preencheLista(Lista *l,char arquivo[80]){
         l->cauda->dado=aux;
         l->cauda->prox=NULL;
         nucleotideo=fgetc(f);
-        i++;
     }
-    if (i>=MAXTAM)
-        printf("Arquivo e igual ou excedeu a quantidade maxima de 100 nomes, lista fica com os 100 primeiros\n");
     fclose(f);
 }
 void printLista(Lista *l){
@@ -63,30 +59,62 @@ void atualizaArquivo(Lista *l,char nomearquvio[80]){
     fputc('-', f);
     fclose(f);
 }
-void maiorCodon(Lista *l){
-    Bloco *percorre, *remove;
-    int cont=0;
+void maiorCodon(Lista *l, Lista *codon){
+    Bloco *percorre, *remove, *aux;
+    int cont=0,max=0;
     percorre=l->cabeca;
-    while (percorre->prox!=NULL){
+    aux=codon->cabeca;
+    printf("%d\n",tamanhoLista(codon));
+    while (percorre->prox!=NULL&&percorre->prox->prox!=NULL&&percorre->prox->prox->prox!=NULL){
         cont=0;
         remove=percorre->prox;
-        while (remove->prox!=NULL)
+        while (remove!=NULL)
         {
-            printf("%c/%c ",remove->dado.value,remove->prox->dado.value);
-            if (remove->dado.value=='T'&&remove->prox->dado.value=='A')
+            if (remove->dado.value==aux->prox->dado.value)
+            {
+                if (aux->prox==codon->cauda)
+                    aux=codon->cabeca;
+                else
+                    aux=aux->prox;
+                remove=remove->prox;
                 cont+=1;
-            else if (remove->dado.value=='A'&&remove->prox->dado.value=='G')
-                cont+=1;
-            else if(remove->dado.value=='G'&&remove->prox->dado.value=='C')
-                cont+=1;
-            else if(remove->dado.value=='C'&&remove->prox->dado.value=='T')
-                cont+=1;
+            }
             else
+            {
+                aux=codon->cabeca;
                 break;
-            remove=remove->prox;
+            }
         }
         printf("%c-",percorre->prox->dado.value);
         printf("%d\n",cont);
-        percorre=percorre->prox;
+        if (cont%tamanhoLista(codon)==0)
+        {
+            if (cont>max)
+                max=cont;
+            for (int i = 1; i < (cont/(tamanhoLista(codon))); i++)
+                percorre=percorre->prox->prox->prox;
+        }
+        percorre=percorre->prox->prox->prox;
     }
+}
+int tamanhoLista(Lista *l){
+    Bloco* aux;
+    int cont=0;
+    aux=l->cabeca;
+    while (aux->prox!=NULL){
+        cont+=1;
+        aux=aux->prox;
+    }
+    return cont;
+}
+void printCodon(Bloco *b,int cont){
+    printf("oi");
+    Bloco* aux;
+    aux=b->prox;
+    for (int i = 0; i < cont; i++)
+    {
+        printf("%c-",aux->prox->dado.value);
+        aux=aux->prox;
+    }
+    printf("\n");
 }
