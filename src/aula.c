@@ -46,25 +46,11 @@ void printLista(Lista *l){
     }
     printf("\n");
 }
-void atualizaArquivo(Lista *l,char nomearquvio[80]){
-    FILE *f;
-    f=fopen(nomearquvio, "w");
-    Bloco* aux;
-    aux=l->cabeca;
-    while(aux->prox!=NULL)
-    {
-        fputc(aux->prox->dado.value, f);
-        aux=aux->prox;
-    }
-    fputc('-', f);
-    fclose(f);
-}
-void maiorCodon(Lista *l, Lista *codon){
+int maiorCodon(Lista *l, Lista *codon){
     Bloco *percorre, *remove, *aux;
     int cont=0,max=0;
     percorre=l->cabeca;
     aux=codon->cabeca;
-    printf("%d\n",tamanhoLista(codon));
     while (percorre->prox!=NULL&&percorre->prox->prox!=NULL&&percorre->prox->prox->prox!=NULL){
         cont=0;
         remove=percorre->prox;
@@ -86,13 +72,12 @@ void maiorCodon(Lista *l, Lista *codon){
             }
         }
         cont=cont-(cont%tamanhoLista(codon));
-        printf("%c-",percorre->prox->dado.value);
-        printf("%d\n",cont);
-        printf("%d\n",cont%tamanhoLista(codon));
         if (cont%tamanhoLista(codon)==0)
         {
-            if (cont>max)
+            if (cont>max){
                 max=cont;
+                maxCodon=*percorre;
+            }                
             for (int i = 1; i < ((tamanhoLista(codon)/3)*(cont/(tamanhoLista(codon)))); i++){
                 if(percorre->prox->prox->prox!=NULL)
                     percorre=percorre->prox->prox->prox;
@@ -101,6 +86,7 @@ void maiorCodon(Lista *l, Lista *codon){
         if(percorre->prox->prox->prox!=NULL)
             percorre=percorre->prox->prox->prox;
     }
+    return max;
 }
 int tamanhoLista(Lista *l){
     Bloco* aux;
@@ -112,13 +98,13 @@ int tamanhoLista(Lista *l){
     }
     return cont;
 }
-void printCodon(Bloco *b,int cont){
-    printf("oi");
+void printCodon(Bloco *b,int cont,Lista *codon){
     Bloco* aux;
-    aux=b->prox;
+    aux=b;
+    printf("O maior codon possui %d repeticoes:\n",cont/tamanhoLista(codon));
     for (int i = 0; i < cont; i++)
     {
-        printf("%c-",aux->prox->dado.value);
+        printf("%c",aux->prox->dado.value);
         aux=aux->prox;
     }
     printf("\n");

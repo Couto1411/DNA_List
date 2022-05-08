@@ -7,8 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAXTAM 100
-
 typedef struct Bloco Bloco;
 typedef struct Item{
     char value;
@@ -24,11 +22,12 @@ typedef struct Lista{
     Bloco* cauda;
 }Lista;
 
+Bloco maxCodon;
+
 void FLVazia(Lista *l);
 void preencheLista(Lista *l,char f[80]);
-void maiorCodon(Lista *l,Lista *codon);
+int maiorCodon(Lista *l,Lista *codon);
 void printLista(Lista *l);
-void atualizaArquivo(Lista *l,char nomearquvio[80]);
 int tamanhoLista(Lista *l);
-void printCodon(Bloco *b,int cont);
+void printCodon(Bloco *b,int cont,Lista *codon);
 #endif
