@@ -85,16 +85,21 @@ void maiorCodon(Lista *l, Lista *codon){
                 break;
             }
         }
+        cont=cont-(cont%tamanhoLista(codon));
         printf("%c-",percorre->prox->dado.value);
         printf("%d\n",cont);
+        printf("%d\n",cont%tamanhoLista(codon));
         if (cont%tamanhoLista(codon)==0)
         {
             if (cont>max)
                 max=cont;
-            for (int i = 1; i < (cont/(tamanhoLista(codon))); i++)
-                percorre=percorre->prox->prox->prox;
+            for (int i = 1; i < ((tamanhoLista(codon)/3)*(cont/(tamanhoLista(codon)))); i++){
+                if(percorre->prox->prox->prox!=NULL)
+                    percorre=percorre->prox->prox->prox;
+            }
         }
-        percorre=percorre->prox->prox->prox;
+        if(percorre->prox->prox->prox!=NULL)
+            percorre=percorre->prox->prox->prox;
     }
 }
 int tamanhoLista(Lista *l){
