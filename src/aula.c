@@ -15,18 +15,8 @@ void preencheLista(Lista *l,char arquivo[80]){
         printf("Erro ao abrir arquivo.\n");
         exit(1);
     }
-    fseek(f,0,SEEK_END);
-    fseek(f, -1, SEEK_CUR);
     nucleotideo=fgetc(f);
-    if(nucleotideo!='-'){
-        fclose(f);
-        f=fopen(arquivo,"a");
-        fputc('-',f);
-    }
-    fclose(f);
-    f=fopen(arquivo,"r");
-    nucleotideo=fgetc(f);
-    while(nucleotideo!='-'){
+    while(!feof (f)){
         l->cauda->prox=(Bloco*)malloc(sizeof(Bloco));
         l->cauda=l->cauda->prox;
         aux.value=nucleotideo;
