@@ -37,9 +37,10 @@ void printLista(Lista *l){
     aux=l->cabeca;
     while (aux->prox!=NULL)
     {
-        printf("%s-%d\n",aux->prox->dado.value,aux->prox->dado.posicao->pos);
+        printf("%s-%d\t",aux->prox->dado.value,aux->prox->dado.posicao->pos);
         aux=aux->prox;
     }
+    printf("\n");
 }
 void maiorCodon(Lista *l, Lista *codon){
     Bloco *codons, *aux, *temp;
@@ -57,8 +58,9 @@ void maiorCodon(Lista *l, Lista *codon){
         aux=l->cabeca;
         while (aux->prox!=NULL)
         {
-            if (strcmp(codons->prox->dado.value,aux->prox->dado.value)==0)
+            if ((strcmp(codons->prox->dado.value,aux->prox->dado.value)==0&&aux->prox->dado.posicao->pos==0)||(strcmp(codons->prox->dado.value,aux->prox->dado.value)==0&&aux->dado.posicao->pos==codons->prox->dado.posicao->pos-1))
                 aux->prox->dado.posicao->pos=codons->prox->dado.posicao->pos;
+            
             aux=aux->prox;
         }
         codons=codons->prox;
@@ -108,7 +110,7 @@ void printCodon(){
     aux=maxCodon;
     for (int i = 1; i < tamanhoCodon; i++)
     {
-        printf("%s - %d \n",aux->prox->dado.value,aux->prox->dado.posicao->pos);
+        printf("%s-",aux->prox->dado.value);
         aux=aux->prox;
     }
     printf("\n");

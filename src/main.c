@@ -5,11 +5,11 @@ int main(){
 	char arquivo[80];
 	int opcao;
 	FLVazia(&l);
+	FLVazia(&codon);
 	printf("Qual o nome do arquivo da cadeia principal? (Max 80)\n");
 	fgets(arquivo,80,stdin);
 	arquivo[strlen(arquivo)-1]='\0';
 	preencheLista(&l,arquivo);
-	FLVazia(&codon);
 	printf("Qual o nome do arquivo da cadeia que deseja buscar? (Max 80)\n");
 	fgets(arquivo,80,stdin);
 	arquivo[strlen(arquivo)-1]='\0';
