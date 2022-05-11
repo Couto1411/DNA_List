@@ -9,7 +9,7 @@ void FLVazia(Lista *l){
 }
 void preencheLista(Lista *l,char arquivo[80]){
     FILE *f;
-    char nucleotideo;
+    int nucleotideo;
     Item aux;
     if(!(f=fopen(arquivo,"r"))){
         printf("Erro ao abrir arquivo.\n");
@@ -17,12 +17,18 @@ void preencheLista(Lista *l,char arquivo[80]){
     }
     nucleotideo=fgetc(f);
     while(!feof (f)){
+        aux.value[0]=nucleotideo;
+        nucleotideo=fgetc(f );
+        aux.value[1]=nucleotideo;
+        nucleotideo=fgetc(f );
+        aux.value[2]=nucleotideo;
+        nucleotideo=fgetc(f );
         l->cauda->prox=(Bloco*)malloc(sizeof(Bloco));
         l->cauda=l->cauda->prox;
-        aux.value=nucleotideo;
+        aux.posicao=(ItemPos*)malloc(sizeof(ItemPos));
+        aux.posicao->pos=0;
         l->cauda->dado=aux;
         l->cauda->prox=NULL;
-        nucleotideo=fgetc(f);
     }
     fclose(f);
 }
@@ -31,70 +37,78 @@ void printLista(Lista *l){
     aux=l->cabeca;
     while (aux->prox!=NULL)
     {
-        printf("%c-",aux->prox->dado.value);
+        printf("%s-%d\n",aux->prox->dado.value,aux->prox->dado.posicao->pos);
         aux=aux->prox;
     }
-    printf("\n");
 }
-int maiorCodon(Lista *l, Lista *codon){
-    Bloco *percorre, *remove, *aux;
-    int cont=0,max=0;
-    percorre=l->cabeca;
-    aux=codon->cabeca;
-    while (percorre->prox!=NULL&&percorre->prox->prox!=NULL&&percorre->prox->prox->prox!=NULL){
-        cont=0;
-        remove=percorre->prox;
-        while (remove!=NULL)
-        {
-            if (remove->dado.value==aux->prox->dado.value)
-            {
-                if (aux->prox==codon->cauda)
-                    aux=codon->cabeca;
-                else
-                    aux=aux->prox;
-                remove=remove->prox;
-                cont+=1;
-            }
-            else
-            {
-                aux=codon->cabeca;
-                break;
-            }
-        }
-        cont=cont-(cont%tamanhoLista(codon));
-        if (cont%tamanhoLista(codon)==0)
-        {
-            if (cont>max){
-                max=cont;
-                maxCodon=*percorre;
-            }                
-            for (int i = 1; i < ((tamanhoLista(codon)/3)*(cont/(tamanhoLista(codon)))); i++){
-                if(percorre->prox->prox->prox!=NULL)
-                    percorre=percorre->prox->prox->prox;
-            }
-        }
-        if(percorre->prox->prox->prox!=NULL)
-            percorre=percorre->prox->prox->prox;
-    }
-    return max;
-}
-int tamanhoLista(Lista *l){
-    Bloco* aux;
-    int cont=0;
-    aux=l->cabeca;
-    while (aux->prox!=NULL){
-        cont+=1;
-        aux=aux->prox;
-    }
-    return cont;
-}
-void printCodon(Bloco *b,int cont,Lista *codon){
-    Bloco* aux;
-    aux=b;
-    printf("O maior codon possui %d repeticoes:\n",cont/tamanhoLista(codon));
-    for (int i = 0; i < cont; i++)
+void maiorCodon(Lista *l, Lista *codon){
+    Bloco *codons, *aux, *temp;
+    int i=1,tamanho;
+    codons=codon->cabeca;
+    while (codons->prox!=NULL)
     {
-        printf("%c",aux->prox->dado.value);
+        codons->prox->dado.posicao->pos=i;
+        codons=codons->prox;
+        i++;
+    }
+    codons=codon->cabeca;
+    while (codons->prox!=NULL)
+    {
+        aux=l->cabeca;
+        while (aux->prox!=NULL)
+        {
+            if (strcmp(codons->prox->dado.value,aux->prox->dado.value)==0)
+                aux->prox->dado.posicao->pos=codons->prox->dado.posicao->pos;
+            aux=aux->prox;
+        }
+        codons=codons->prox;
+    }
+    i=0;
+    aux=l->cabeca;
+    while (aux->prox!=NULL)
+    {
+        if (aux->prox->dado.posicao->pos==i+1)
+        {
+            temp=aux->prox;
+            tamanho=1;
+            while (temp!=NULL&&temp->dado.posicao->pos==i+1)
+            {
+                tamanho+=1;
+                i++;
+                temp=temp->prox;
+            }
+            if (tamanho>tamanhoCodon)
+            {
+                tamanhoCodon=tamanho;
+                maxCodon=aux;
+            }
+            i=i-tamanho+1;
+        }   
+        aux=aux->prox;
+        if (aux->prox==NULL&&i<codons->dado.posicao->pos)
+        {
+            aux=l->cabeca;
+            i++;
+        }
+    }
+    
+}
+// int tamanhoLista(Lista *l){
+//     Bloco* aux;
+//     int cont=0;
+//     aux=l->cabeca;
+//     while (aux->prox!=NULL){
+//         cont+=1;
+//         aux=aux->prox;
+//     }
+//     return cont;
+// }
+void printCodon(){
+    Bloco *aux;
+    aux=maxCodon;
+    for (int i = 1; i < tamanhoCodon; i++)
+    {
+        printf("%s - %d \n",aux->prox->dado.value,aux->prox->dado.posicao->pos);
         aux=aux->prox;
     }
     printf("\n");
