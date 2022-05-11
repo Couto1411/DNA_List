@@ -28,6 +28,8 @@ Existe uma lista dinâmica **l** e uma **codon** da maneira (Baseado de : [vide 
 1) Ao entrar no programa a primeira função encontrada é *FLVazia(&l)* e *FLVazia(&codon)* (Baseado de : [vide git](https://github.com/mpiress/dynamic_list)):
 >Função responsável por criar um espaço de memória para ser a cabeça da lista. Para tanto, é utilizado a chamada de função nativa do C/C++ malloc, o qual recebe como referência o espaço a ser reservado por meio da diretriz sizeof. Nesse primeiro momento, o casting (i.e., conversão de um tipo void criado pelo malloc para um tipo específico) se torna opcional, sendo utilizado na codificação apenas para manter um único padrão de definição de função. Como pode ser observado no código disponibilizado, o endereço produzido pela execução do malloc é copiado para o ponteiro primeiro e último, mantendo ambos no mesmo endereço. O que significará que a lista se encontra vazia. Por fim, apontamos o prox de ambos os ponteiros para NULL.    
 
+Além de setar o atributo **pos**(posição) de cada elemento como 0;
+
 2) A segunda função *preencheLista(&l,arquivo)* *preencheLista(&codon,arquivo)* tem o objetivo de preencher **l** com a cadeia principal, e **codon** com a cadeia de busca, pegando o nome de arquivos de formato;
 >a<sub>1</sub>
 >a<sub>2</sub>
